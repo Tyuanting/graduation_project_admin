@@ -3,59 +3,93 @@
     <el-container>
       <el-aside width="200px">
         <div class="logo">
-          <img src="../../assets/logo.png" alt="" />试一试的后台
+          <img src="../../assets/logo.png" alt="" />try一try
         </div>
         <el-menu
-          default-active="2"
+          default-active="/dataShow"
           class="el-menu-vertical-demo"
           background-color="#52575c"
           text-color="#fff"
           active-text-color="#ffd04b"
+          router
         >
-          <el-submenu index="1">
+          <!-- <el-menu-item index="/dataShow">
+            <i class="el-icon-s-home"></i>
+            <span slot="title">首页</span>
+          </el-menu-item>
+          <el-submenu index="/merchantAdmin">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <i class="el-icon-s-shop"></i>
+              <span>商户管理</span>
             </template>
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
-            </el-submenu>
+
+            <el-menu-item index="/merchantAdmin/merchants">
+              <i class="el-icon-menu"></i>
+              <span slot="title">商户列表</span>
+            </el-menu-item>
+            <el-menu-item index="/merchantAdmin/complaints">
+              <i class="el-icon-menu"></i>
+              <span slot="title">投诉处理</span>
+            </el-menu-item>
           </el-submenu>
-          <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
-            <span slot="title">导航二</span>
+
+          <el-menu-item index="/">
+            <i class="el-icon-s-custom"></i>
+            <span slot="title">用户管理</span>
           </el-menu-item>
-          <el-menu-item index="3" disabled>
+          <el-menu-item index="/">
             <i class="el-icon-document"></i>
-            <span slot="title">导航三</span>
+            <span slot="title">商品管理</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item index="/">
+            <i class="el-icon-document"></i>
+            <span slot="title">订单管理</span>
+          </el-menu-item>
+          <el-menu-item index="/">
+            <i class="el-icon-document"></i>
+            <span slot="title">出货看单</span>
+          </el-menu-item>
+          <el-menu-item index="/">
             <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
-          </el-menu-item>
+            <span slot="title">平台设置</span>
+          </el-menu-item> -->
+          <subMenuItem
+            v-for="(item, idx) in routes"
+            :subroute="item"
+            :barIdx="idx"
+            :key="idx"
+          ></subMenuItem>
         </el-menu>
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
-        <el-main>Main</el-main>
+        <el-header>
+          <div class="user-info">
+            <img src="../../assets/head.png" alt="" />
+            <span>admin</span>
+          </div>
+        </el-header>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 
 <script>
+import subMenuItem from "../../components/subMenuItem.vue";
 export default {
+  components: {
+    subMenuItem,
+  },
   data() {
-    return {};
+    return {
+      routes: [],
+    };
+  },
+  mounted() {
+    console.log(this.$router.options.routes);
+    this.routes = this.$router.options.routes;
   },
 };
 </script>
@@ -67,6 +101,19 @@ export default {
   color: #333;
   text-align: center;
   line-height: 60px;
+}
+
+.user-info {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  img {
+    width: 30px;
+    height: 30px;
+  }
+  span {
+    margin-left: 10px;
+  }
 }
 
 .el-aside {
@@ -91,6 +138,7 @@ export default {
 
 .el-menu {
   border: none;
+  text-align: left;
 }
 
 .el-main {
