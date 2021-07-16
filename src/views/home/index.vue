@@ -6,53 +6,13 @@
           <img src="../../assets/logo.png" alt="" />try一try
         </div>
         <el-menu
-          default-active="/dataShow"
+          :default-active="this.$route.path"
           class="el-menu-vertical-demo"
           background-color="#52575c"
           text-color="#fff"
           active-text-color="#ffd04b"
           router
         >
-          <!-- <el-menu-item index="/dataShow">
-            <i class="el-icon-s-home"></i>
-            <span slot="title">首页</span>
-          </el-menu-item>
-          <el-submenu index="/merchantAdmin">
-            <template slot="title">
-              <i class="el-icon-s-shop"></i>
-              <span>商户管理</span>
-            </template>
-
-            <el-menu-item index="/merchantAdmin/merchants">
-              <i class="el-icon-menu"></i>
-              <span slot="title">商户列表</span>
-            </el-menu-item>
-            <el-menu-item index="/merchantAdmin/complaints">
-              <i class="el-icon-menu"></i>
-              <span slot="title">投诉处理</span>
-            </el-menu-item>
-          </el-submenu>
-
-          <el-menu-item index="/">
-            <i class="el-icon-s-custom"></i>
-            <span slot="title">用户管理</span>
-          </el-menu-item>
-          <el-menu-item index="/">
-            <i class="el-icon-document"></i>
-            <span slot="title">商品管理</span>
-          </el-menu-item>
-          <el-menu-item index="/">
-            <i class="el-icon-document"></i>
-            <span slot="title">订单管理</span>
-          </el-menu-item>
-          <el-menu-item index="/">
-            <i class="el-icon-document"></i>
-            <span slot="title">出货看单</span>
-          </el-menu-item>
-          <el-menu-item index="/">
-            <i class="el-icon-setting"></i>
-            <span slot="title">平台设置</span>
-          </el-menu-item> -->
           <subMenuItem
             v-for="(item, idx) in routes"
             :subroute="item"
@@ -63,6 +23,15 @@
       </el-aside>
       <el-container>
         <el-header>
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item
+              v-for="(item, index) in breadList"
+              :key="index"
+              :to="{ path: item.path }"
+              replace
+              >{{ item.meta.title }}</el-breadcrumb-item
+            >
+          </el-breadcrumb>
           <div class="user-info">
             <img src="../../assets/head.png" alt="" />
             <span>admin</span>
@@ -85,10 +54,29 @@ export default {
   data() {
     return {
       routes: [],
+      breadList: [], // 面包屑路由集合
     };
   },
+  watch: {
+    $route() {
+      this.getBreadcrumb();
+    },
+  },
+  methods: {
+    isHome(route) {
+      return route.name === "home";
+    },
+    getBreadcrumb() {
+      let matched = this.$route.matched;
+      //如果不是首页
+      if (!this.isHome(matched[0])) {
+        matched = [{ path: "/", meta: { title: "首页" } }].concat(matched);
+      }
+      this.breadList = matched;
+    },
+  },
   mounted() {
-    console.log(this.$router.options.routes);
+    this.getBreadcrumb();
     this.routes = this.$router.options.routes;
   },
 };
@@ -96,6 +84,8 @@ export default {
 
 <style lang="less" scoped>
 .el-header {
+  display: flex;
+  justify-content: space-between;
   background-color: #f0f0f0;
   border-bottom: 2px solid #ddd;
   color: #333;
@@ -103,9 +93,12 @@ export default {
   line-height: 60px;
 }
 
+.el-breadcrumb {
+  line-height: unset;
+}
+
 .user-info {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   img {
     width: 30px;
